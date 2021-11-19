@@ -2,10 +2,6 @@ module Msteams
   class Msteams
 
     def self.post(text, users = [])
-      current = User.current
-      if current.pref.no_self_notified
-        users = users.filter{|u| u.id != current.id}
-      end
       setting = Setting.plugin_redmine_msteams
       mentions = users.map { |user| 
         {
