@@ -17,7 +17,7 @@ module Msteams
           }
         }
       }
-      text = mentions.map{ |m| m['text'] }.join(' ') + '\n' + text
+      text = mentions.map{ |m| m['text'] }.join(' ') + '\r\n' + text
       uri = URI.parse(File.join(setting['service_url'], '/v3/conversations/', CGI.escape(setting['channel_id']), 'activities'))
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = uri.scheme == 'https'
