@@ -27,7 +27,7 @@ module RedmineMsteams
 
     def model_changeset_scan_commit_for_issue_ids_pre_issue_update(context={})
       issue = context[:issue]
-      journal = context[:journal]
+      journal = issue.current_journal
       users = issue.notified_users | issue.notified_watchers
       text = "#{l(:text_issue_updated, :id => "##{issue.id}", :author => journal.user)}\r\n\r\n---\r\n"
       text += "# [#{issue.project.name}](#{object_url(issue.project)}) - #{issue.tracker.name} [##{issue.id}](#{object_url(issue)})"
