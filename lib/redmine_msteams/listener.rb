@@ -29,6 +29,9 @@ module RedmineMsteams
       issue = context[:issue]
       journal = issue.current_journal
       users = issue.notified_users | issue.notified_watchers
+      if journal.user.pref.no_self_notified
+        users = users.filter{|u| u.id != journal.user.id}
+      end
       text = "#{l(:text_issue_updated, :id => "##{issue.id}", :author => journal.user)}\r\n\r\n---\r\n"
       text += "# [#{issue.project.name}](#{object_url(issue.project)}) - #{issue.tracker.name} [##{issue.id}](#{object_url(issue)})"
       text += " (#{issue.status.name}) " if journal.new_value_for('status_id') && Setting.show_status_changes_in_mail_subject?
