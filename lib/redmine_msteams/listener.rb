@@ -8,6 +8,7 @@ module RedmineMsteams
       if issue.author.pref.no_self_notified
         users = users.filter{|u| u.id != issue.author.id}
       end
+      return if Setting.plugin_redmine_msteams['only_assign'] and not issue.assigned_to
       text = "#{l(:text_issue_added, :id => "##{issue.id}", :author => issue.author)}\r\n\r\n---\r\n"
       text += "# [#{issue.project.name}](#{object_url(issue.project)}) - #{issue.tracker.name} [##{issue.id}](#{issue_url})"
       text += " (#{issue.status.name})" if Setting.show_status_changes_in_mail_subject?
@@ -23,6 +24,7 @@ module RedmineMsteams
       if journal.user.pref.no_self_notified
         users = users.filter{|u| u.id != journal.user.id}
       end
+      return if Setting.plugin_redmine_msteams['only_assign'] and not journal.new_value_for('assigned_to_id')
       text = "#{l(:text_issue_updated, :id => "##{issue.id}", :author => journal.user)}\r\n\r\n---\r\n"
       text += "# [#{issue.project.name}](#{object_url(issue.project)}) - #{issue.tracker.name} [##{issue.id}](#{object_url(issue)})"
       text += " (#{issue.status.name}) " if journal.new_value_for('status_id') && Setting.show_status_changes_in_mail_subject?
@@ -32,6 +34,7 @@ module RedmineMsteams
     end
 
     def model_changeset_scan_commit_for_issue_ids_pre_issue_update(context={})
+      return if Setting.plugin_redmine_msteams['only_assign']
       issue = context[:issue]
       journal = issue.current_journal
       users = issue.notified_users | issue.notified_watchers
@@ -47,6 +50,7 @@ module RedmineMsteams
     end
 
     def controller_messages_new_after_save(context={})
+      return if Setting.plugin_redmine_msteams['only_assign']
       message = context[:message]
       users = message.notified_users
       if message.author.pref.no_self_notified
@@ -58,6 +62,7 @@ module RedmineMsteams
     end
 
     def controller_messages_reply_after_save(context={})
+      return if Setting.plugin_redmine_msteams['only_assign']
       message = context[:message]
       users = message.notified_users
       if message.author.pref.no_self_notified
@@ -69,6 +74,7 @@ module RedmineMsteams
     end
 
     def controller_wiki_edit_after_save(context={})
+      return if Setting.plugin_redmine_msteams['only_assign']
       page = context[:page]
       users = page.notified_watchers | page.wiki.notified_watchers | page.project.notified_users
       if page.content_for_version.author.pref.no_self_notified

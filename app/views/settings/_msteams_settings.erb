@@ -4,6 +4,7 @@
     <tr><th>Channel ID</th><td><input type="text" id="channel_id" value="<%= settings['channel_id'] %>" name="settings[channel_id]"/></td></tr>
     <tr><th>Client ID</th><td><input type="text" id="client_id" value="<%= settings['client_id'] %>" name="settings[client_id]"/></td></tr>
     <tr><th>Client Secret</th><td><input type="text" id="client_secret" value="<%= settings['client_secret'] %>" name="settings[client_secret]"/></td></tr>
+    <tr><th><p><label for="only_assign"><input type="checkbox" id="only_assign" value="<%= settings['only_assign'] %>" name="settings[only_assign]"/>Notify only when assignee changed</label></p></th><td></td></tr>
     <tr><th></th><td><%= link_to 'Test', { controller: 'settings/msteams', action: 'test'} %></td></tr>
   </tbody>
 </table>
