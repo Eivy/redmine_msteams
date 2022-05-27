@@ -2,9 +2,6 @@ module Msteams
   class Msteams
 
     def self.post(text, users = [])
-      p text
-      p users
-      return
       setting = Setting.plugin_redmine_msteams
       mentions = users.map { |user| 
         {
