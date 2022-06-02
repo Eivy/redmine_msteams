@@ -8,7 +8,12 @@ module RedmineMsteams
       if issue.author.pref.no_self_notified
         users = users.filter{|u| u.id != issue.author.id}
       end
-      return if Setting.plugin_redmine_msteams['only_assign'] and not issue.assigned_to
+      if Setting.plugin_redmine_msteams['only_assign'] and not issue.assigned_to
+        users = users.filter{|u| u.id == issue.assigned_to}
+        if users.length == 0
+          return
+        end
+      end
       text = "#{l(:text_issue_added, :id => "##{issue.id}", :author => issue.author)}\r\n\r\n---\r\n"
       text += "# [#{issue.project.name}](#{object_url(issue.project)}) - #{issue.tracker.name} [##{issue.id}](#{issue_url})"
       text += " (#{issue.status.name})" if Setting.show_status_changes_in_mail_subject?
@@ -24,7 +29,12 @@ module RedmineMsteams
       if journal.user.pref.no_self_notified
         users = users.filter{|u| u.id != journal.user.id}
       end
-      return if Setting.plugin_redmine_msteams['only_assign'] and not journal.new_value_for('assigned_to_id')
+      if Setting.plugin_redmine_msteams['only_assign']
+        users = users.filter{|u| u.id == journal.new_value_for('assigned_to_id')}
+        if users.length == 0
+          return
+        end
+      end
       text = "#{l(:text_issue_updated, :id => "##{issue.id}", :author => journal.user)}\r\n\r\n---\r\n"
       text += "# [#{issue.project.name}](#{object_url(issue.project)}) - #{issue.tracker.name} [##{issue.id}](#{object_url(issue)})"
       text += " (#{issue.status.name}) " if journal.new_value_for('status_id') && Setting.show_status_changes_in_mail_subject?
