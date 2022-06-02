@@ -36,7 +36,8 @@ module Msteams
         'grant_type' => 'client_credentials',
         'scope' => 'https://api.botframework.com/.default',
         'client_id' => setting['client_id'],
-        'client_secret' => setting['client_secret']
+        'client_secret' => setting['client_secret'],
+        'only_assign' => setting['only_assign']
       }
       uri = URI.parse('https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token')
       http = Net::HTTP.new(uri.host, uri.port)
