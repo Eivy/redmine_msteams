@@ -8,9 +8,13 @@ module RedmineMsteams
       if issue.author.pref.no_self_notified
         users = users.filter{|u| u.id != issue.author.id}
       end
-      if Setting.plugin_redmine_msteams['only_assign'] and not issue.assigned_to
-        users = users.filter{|u| u.id == issue.assigned_to}
-        if users.length == 0
+      if Setting.plugin_redmine_msteams['only_assign']
+        if issue.assigned_to
+          users = users.filter{|u| u.id == issue.assigned_to}
+          if users.length == 0
+            return
+          end
+        else
           return
         end
       end
