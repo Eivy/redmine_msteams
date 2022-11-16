@@ -2,6 +2,9 @@ module Msteams
   class Msteams
 
     def self.post(text, users = [])
+      if users.length == 0
+        return
+      end
       setting = Setting.plugin_redmine_msteams
       mentions = users.map { |user| 
         {
