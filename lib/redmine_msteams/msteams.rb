@@ -17,38 +17,16 @@ module Msteams
         }
       }
       text = mentions.map{ |m| m['text'] }.join(' ') + "\r\n\r\n" + text
-      uri = URI.parse(File.join(setting['service_url'], '/v3/conversations/', CGI.escape(setting['channel_id']), 'activities'))
+      uri = URI.parse(setting["incomming_webhook_url"])
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = uri.scheme == 'https'
-      headers = {
-        'Content-Type' => 'application/json',
-        'Authorization' => get_token
-      }
       param = {
         'type' => 'message',
         'text' => text,
         'entities' => mentions
       }
-      res = http.post(uri.path, param.to_json, headers)
+      res = http.post(uri.path, param.to_json)
       p res
-    end
-
-    def self.get_token
-      setting = Setting.plugin_redmine_msteams
-      param = {
-        'grant_type' => 'client_credentials',
-        'scope' => 'https://api.botframework.com/.default',
-        'client_id' => setting['client_id'],
-        'client_secret' => setting['client_secret'],
-        'only_assign' => setting['only_assign']
-      }
-      uri = URI.parse('https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token')
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = uri.scheme == 'https'
-      body = URI.encode_www_form(param)
-      res = http.post(uri.path, body)
-      token = JSON.parse(res.body)
-      "#{token['token_type']} #{token['access_token']}"
     end
 
   end
