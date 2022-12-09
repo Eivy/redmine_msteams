@@ -1,4 +1,4 @@
-module Msteams
+module RedmineMsteams::Msteams
   class Msteams
 
     def self.post(text, users = [])
