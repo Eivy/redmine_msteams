@@ -27,6 +27,7 @@ module RedmineMsteams::Msteams
       }
       res = http.post(uri.path, param.to_json)
       p res
+      p res.body
     end
 
   end
