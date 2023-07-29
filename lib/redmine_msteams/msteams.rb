@@ -25,7 +25,8 @@ module Msteams
         'text' => text,
         'entities' => mentions
       }
-      res = http.post(uri.path, param.to_json)
+      headers = { "Content-Type" => "application/json" }
+      res = http.post(uri.path, param.to_json, headers)
       p res
       p res.body
     end
