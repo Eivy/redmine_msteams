@@ -4,7 +4,7 @@ module RedmineMsteams
     def controller_issues_new_after_save(context={})
       issue = context[:issue]
       issue_url = object_url(issue)
-      users = issue.notified_users | issue.notified_watchers
+      users = issue.notified_users | issue.notified_watchers | issue.notified_mentions
       if issue.author.pref.no_self_notified
         users = users.filter{|u| u.id != issue.author.id}
       end
@@ -29,7 +29,7 @@ module RedmineMsteams
     def controller_issues_edit_after_save(context={})
       issue = context[:issue]
       journal = context[:journal]
-      users = issue.notified_users | issue.notified_watchers
+      users = issue.notified_users | issue.notified_watchers | issue.notified_mentions | journal.notified_users | journal.notified_watchers | journal.notified_mentions | journal.journalized.notified_mentions
       if journal.user.pref.no_self_notified
         users = users.filter{|u| u.id != journal.user.id}
       end
@@ -51,7 +51,7 @@ module RedmineMsteams
       return if Setting.plugin_redmine_msteams['only_assign']
       issue = context[:issue]
       journal = issue.current_journal
-      users = issue.notified_users | issue.notified_watchers
+      users = issue.notified_users | issue.notified_watchers | issue.notified_mention | journal.notified_users | journal.notified_watchers | journal.notified_mentions | journal.journalized.notified_mentions
       if journal.user.pref.no_self_notified
         users = users.filter{|u| u.id != journal.user.id}
       end
@@ -90,7 +90,7 @@ module RedmineMsteams
     def controller_wiki_edit_after_save(context={})
       return if Setting.plugin_redmine_msteams['only_assign']
       page = context[:page]
-      users = page.notified_watchers | page.wiki.notified_watchers | page.project.notified_users
+      users = page.notified_watchers | page.wiki.notified_watchers | page.content.notified_mentions | page.project.notified_users
       if page.content_for_version.author.pref.no_self_notified
         users = users.filter{|u| u.id != page.content_for_version.author.id}
       end
