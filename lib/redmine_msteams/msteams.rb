@@ -30,6 +30,12 @@ module RedmineMsteams::Msteams
         res = http.post(uri.path, param.to_json, headers)
         p res
         p res.body
+        param = {
+          'text' => text
+        }
+        res = http.post(uri.path, param.to_json, headers)
+        p res
+        p res.body
       }
     end
 
