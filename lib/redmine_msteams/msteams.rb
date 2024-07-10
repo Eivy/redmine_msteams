@@ -7,33 +7,32 @@ module RedmineMsteams::Msteams
           return
         end
         setting = Setting.plugin_redmine_msteams
-        mentions = users.map { |user| 
-          {
-            'type' => 'mention',
-            'text' => "<at>#{user.name}</at>",
-            'mentioned' => {
-              'id' => user.mail,
-              'name' => user.name
-            }
-          }
+        users.each { |user| 
+          text = text.gsub(user.name, '<at>' + user.mail + '</at>')
         }
-        text = mentions.map{ |m| m['text'] }.join(' ') + "\r\n\r\n" + text
+        messages = [
+          "contentType" => "application/vnd.microsoft.card.adaptive",
+          "content" => {
+            "$schema" => "http://adaptivecards.io/schemas/adaptive-card.json",
+            "type" => "AdaptiveCard",
+            "version" => "1.2",
+            "body" => [
+              {
+                "type" => "TextBlock",
+                "text" => text,
+              }
+            ]
+          }
+        ]
         uri = URI.parse(setting["incomming_webhook_url"])
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = uri.scheme == 'https'
         param = {
           'type' => 'message',
-          'text' => text,
-          'entities' => mentions
+          'attachments' => messages,
         }
         headers = { "Content-Type" => "application/json" }
-        res = http.post(uri.path, param.to_json, headers)
-        p res
-        p res.body
-        param = {
-          'text' => text
-        }
-        res = http.post(uri.path, param.to_json, headers)
+        res = http.post(uri, param.to_json, headers)
         p res
         p res.body
       }
