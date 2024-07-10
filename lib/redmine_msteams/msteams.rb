@@ -10,7 +10,7 @@ module RedmineMsteams::Msteams
         mentions = users.map { |user| 
           '<at>' + user.mail + '</at>'
         }
-        text = mentions.map{ |m| m['text'] }.join(' ') + "\r\n\r\n" + text
+        text = mentions.join(' ') + "\r\n\r\n" + text
         messages = [
           "contentType" => "application/vnd.microsoft.card.adaptive",
           "content" => {
