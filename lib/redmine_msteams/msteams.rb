@@ -7,9 +7,10 @@ module RedmineMsteams::Msteams
           return
         end
         setting = Setting.plugin_redmine_msteams
-        users.each { |user| 
-          text = text.gsub(user.name, '<at>' + user.mail + '</at>')
+        mentions = users.map { |user| 
+          '<at>' + user.mail + '</at>'
         }
+        text = mentions.map{ |m| m['text'] }.join(' ') + "\r\n\r\n" + text
         messages = [
           "contentType" => "application/vnd.microsoft.card.adaptive",
           "content" => {
